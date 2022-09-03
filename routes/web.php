@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,24 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('reddit')->redirect();
+});
+
+Route::get('/auth/callback', function () {
+    $user = Socialite::driver('reddit')->user();
+
+    /** @var User $user */
+    $user = User::updateOrCreate([
+        'reddit_id' => $user->getId(),
+    ], [
+        'name' => $user->getNickname(),
+        'reddit_id' => $user->getId()
+    ]);
+
+    return $user->createToken('API Token')->plainTextToken;
+
+    // TODO Check how to use it later in requests
 });

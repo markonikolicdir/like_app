@@ -20,4 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::apiResource('threads', ThreadController::class);
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::apiResource('threads', ThreadController::class);
+});

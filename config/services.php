@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'reddit' => [
+        'client_id' => '0vYl2GW3lxkfnEmtgv2hVA',
+        'client_secret' => 'spd63IT-WNq_27A72QwRM9qW1OQ3zw',
+        'redirect' => 'http://127.0.0.1:8000/auth/callback',
+    ],
+
 ];
