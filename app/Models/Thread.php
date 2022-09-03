@@ -6,9 +6,12 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
+ * @property int $id
  * @property int $user_id
  * @property Carbon $created_at
  */
@@ -43,5 +46,15 @@ class Thread extends Model
         }
 
         throw new Exception('User not found');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments()->get();
     }
 }
