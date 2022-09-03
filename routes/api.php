@@ -25,4 +25,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('threads', ThreadController::class);
 
     Route::resource('threads.comments', CommentController::class)->shallow();
+
+    Route::patch('comments/{comment}/publish', [CommentController::class, 'publish']);
 });

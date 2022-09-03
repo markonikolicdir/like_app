@@ -11,12 +11,12 @@ class ThreadPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): Response|bool
+    public function viewAny(User $user): bool
     {
         return true;
     }
 
-    public function view(User $user, Thread $thread): Response|bool
+    public function view(User $user, Thread $thread): bool
     {
         return true;
     }

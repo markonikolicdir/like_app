@@ -2,7 +2,9 @@
 
 namespace App\Policies;
 
+use App\Models\Comment;
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CommentPolicy
@@ -10,12 +12,16 @@ class CommentPolicy
     use HandlesAuthorization;
 
     /**
-     * Create a new policy instance.
-     *
-     * @return void
+     * @throws Exception
      */
-    public function __construct()
+    public function changeVisibility(User $user, Comment $comment): bool
     {
-        //
+        $thread = $comment->getThread();
+
+        if($user->id != $thread->getUser()->id) {
+            return false;
+        }
+        
+        return true;
     }
 }

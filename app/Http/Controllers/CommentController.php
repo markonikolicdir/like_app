@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Thread;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
@@ -75,5 +76,23 @@ class CommentController extends Controller
             'status' => $result,
             'message' => $result ? 'success' : 'failed'
         ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Comment $comment
+     * @return CommentResource
+     * @throws AuthorizationException
+     */
+    public function publish(Comment $comment): CommentResource
+    {
+        $this->authorize('changeVisibility', [Comment::class, $comment]);
+
+        $comment->visible = !$comment->visible;
+
+        $comment->update();
+
+        return new CommentResource($comment);
     }
 }
