@@ -6,9 +6,12 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property int $id
  * @property boolean $visible
+ * @property int $thread_id
  */
 class Comment extends Model
 {
@@ -16,12 +19,20 @@ class Comment extends Model
 
     protected $fillable = [
         'thread_id',
-        'message'
+        'message',
+        'parent_id'
     ];
 
     protected $casts = [
         'visible' => 'boolean',
     ];
+
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['children'];
 
     public function thread(): BelongsTo
     {
@@ -40,5 +51,10 @@ class Comment extends Model
         }
 
         throw new Exception('Thread not found');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'parent_id', 'id');
     }
 }

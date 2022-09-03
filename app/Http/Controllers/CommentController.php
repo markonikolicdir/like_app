@@ -95,4 +95,21 @@ class CommentController extends Controller
 
         return new CommentResource($comment);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param StoreCommentRequest $request
+     * @param Comment $comment
+     * @return CommentResource
+     */
+    public function reply(StoreCommentRequest $request, Comment $comment): CommentResource
+    {
+        $replyComment = $request->validated();
+
+        $replyComment['thread_id'] = $comment->thread_id;
+        $replyComment['parent_id'] = $comment->id;
+
+        return new CommentResource(Comment::create($replyComment));
+    }
 }
