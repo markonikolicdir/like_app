@@ -1,3 +1,5 @@
+@include('index')
+
 <table border="1">
     <tr>
         <td>Title</td>

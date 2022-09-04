@@ -17,11 +17,15 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
+Route::get('/', function () {
+    return view('index');
+})->name('home');
+
 Route::get('/auth/redirect', function () {
     return Socialite::driver('reddit')
         ->scopes(['identity', 'submit'])
         ->redirect();
-});
+})->name('redirect');
 
 Route::get('/auth/callback', function () {
     $redditUser = Socialite::driver('reddit')->user();
@@ -34,20 +38,21 @@ Route::get('/auth/callback', function () {
         'reddit_id' => $redditUser->getId()
     ]);
 
-    // Use this token for Bearer authorization api calls
-    var_dump($user->createToken('API Token')->plainTextToken);
-
-    // User this for reddit live api, save it in db
-    var_dump($redditUser->token);
-
     Auth::login($user);
+
+    return view('auth.callback', [
+        'sanctum' => $user->createToken('API Token')->plainTextToken,
+        'reddit' => $redditUser->token
+    ]);
 });
 
 Route::get('/auth/logout', function () {
     Auth::logout();
-});
+
+    return to_route('home');
+})->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('threads', [ThreadController::class, 'index']);
-    Route::get('threads/nested', [ThreadController::class, 'nested']);
+    Route::get('threads', [ThreadController::class, 'index'])->name('thread.view');
+    Route::get('threads/nested', [ThreadController::class, 'nested'])->name('thread.view.nested');
 });
