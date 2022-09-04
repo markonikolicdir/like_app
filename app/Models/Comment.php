@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property boolean $visible
  * @property int $thread_id
+ * @property int $votes
  */
 class Comment extends Model
 {

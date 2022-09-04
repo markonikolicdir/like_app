@@ -25,4 +25,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::patch('comments/{comment}/publish', [CommentController::class, 'publish']);
 
     Route::post('comments/{comment}/reply', [CommentController::class, 'reply']);
+
+    Route::patch('comments/{comment}/upvote', [CommentController::class, 'upvote']);
 });

@@ -9,6 +9,8 @@ use App\Models\Thread;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class CommentController extends Controller
 {
@@ -113,5 +115,26 @@ class CommentController extends Controller
         $replyComment['parent_id'] = $comment->id;
 
         return new CommentResource(Comment::create($replyComment));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Comment $comment
+     * @return CommentResource
+     */
+    public function upvote(Comment $comment): CommentResource
+    {
+        $key = md5($comment->id . Auth::id());
+
+        $comment = Cache::rememberForever($key, function () use ($comment) {
+            $comment->votes++;
+
+            $comment->update();
+
+            return $comment;
+        });
+
+        return new CommentResource($comment);
     }
 }
