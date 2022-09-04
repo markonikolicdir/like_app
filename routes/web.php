@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Web\ThreadController;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -37,4 +39,15 @@ Route::get('/auth/callback', function () {
 
     // User this for reddit live api, save it in db
     var_dump($redditUser->token);
+
+    Auth::login($user);
+});
+
+Route::get('/auth/logout', function () {
+    Auth::logout();
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('threads', [ThreadController::class, 'index']);
+    Route::get('threads/nested', [ThreadController::class, 'nested']);
 });
