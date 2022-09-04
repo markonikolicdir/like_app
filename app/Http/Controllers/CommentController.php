@@ -8,17 +8,19 @@ use App\Models\Comment;
 use App\Models\Thread;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Thread $thread
+     * @return AnonymousResourceCollection
      */
-    public function index(Thread $thread)
+    public function index(Thread $thread): AnonymousResourceCollection
     {
-
+        return CommentResource::collection(Comment::all()->where('thread_id', '=', $thread->id));
     }
 
     /**

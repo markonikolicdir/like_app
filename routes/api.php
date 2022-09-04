@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ThreadController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,13 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('threads', ThreadController::class);
+
+    Route::post('threads/{thread}/live-reddit', [ThreadController::class, 'liveReddit']);
 
     Route::resource('threads.comments', CommentController::class)->shallow();
 

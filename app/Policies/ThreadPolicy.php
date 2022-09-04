@@ -43,4 +43,13 @@ class ThreadPolicy
     {
         return true;
     }
+
+    public function liveReddit(User $user, Thread $thread): bool
+    {
+        if($user->id != $thread->getUser()->id) {
+            return false;
+        }
+
+        return true;
+    }
 }

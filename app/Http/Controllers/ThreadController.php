@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreThreadRequest;
 use App\Http\Resources\ThreadResource;
 use App\Models\Thread;
+use App\Services\RedditService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class ThreadController extends Controller
 {
-    public function __construct()
+    public function __construct(private RedditService $redditService)
     {
         $this->authorizeResource(Thread::class, 'thread');
     }
@@ -20,11 +23,11 @@ class ThreadController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
-        //
+        return ThreadResource::collection(Thread::all());
     }
 
     /**
@@ -76,6 +79,25 @@ class ThreadController extends Controller
     public function destroy(Thread $thread): JsonResponse
     {
         $result = $thread->delete();
+
+        return response()->json([
+            'status' => $result,
+            'message' => $result ? 'success' : 'failed'
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Thread $thread
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function liveReddit(Thread $thread): JsonResponse
+    {
+        $this->authorize('liveReddit', [$thread]);
+
+        $result = $this->redditService->publishToReddit($thread);
 
         return response()->json([
             'status' => $result,

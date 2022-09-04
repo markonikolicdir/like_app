@@ -15,26 +15,26 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/auth/redirect', function () {
-    return Socialite::driver('reddit')->redirect();
+    return Socialite::driver('reddit')
+        ->scopes(['identity', 'submit'])
+        ->redirect();
 });
 
 Route::get('/auth/callback', function () {
-    $user = Socialite::driver('reddit')->user();
+    $redditUser = Socialite::driver('reddit')->user();
 
     /** @var User $user */
     $user = User::updateOrCreate([
-        'reddit_id' => $user->getId(),
+        'reddit_id' => $redditUser->getId(),
     ], [
-        'name' => $user->getNickname(),
-        'reddit_id' => $user->getId()
+        'name' => $redditUser->getNickname(),
+        'reddit_id' => $redditUser->getId()
     ]);
 
-    return $user->createToken('API Token')->plainTextToken;
+    // Use this token for Bearer authorization api calls
+    var_dump($user->createToken('API Token')->plainTextToken);
 
-    // TODO Check how to use it later in requests
+    // User this for reddit live api, save it in db
+    var_dump($redditUser->token);
 });

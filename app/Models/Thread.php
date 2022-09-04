@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
  * @property int $id
  * @property int $user_id
  * @property Carbon $created_at
+ * @property string $title
  */
 class Thread extends Model
 {
