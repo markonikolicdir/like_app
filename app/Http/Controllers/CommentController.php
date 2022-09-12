@@ -22,7 +22,7 @@ class CommentController extends Controller
      */
     public function index(Thread $thread): AnonymousResourceCollection
     {
-        return CommentResource::collection(Comment::all()->where('thread_id', '=', $thread->id));
+        return CommentResource::collection(Comment::published()->where('thread_id', '=', $thread->id)->get());
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,8 +55,19 @@ class Comment extends Model
         throw new Exception('Thread not found');
     }
 
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('visible', '=', 1);
+    }
+
     public function children(): HasMany
     {
-        return $this->hasMany(Comment::class, 'parent_id', 'id');
+        return $this->hasMany(Comment::class, 'parent_id', 'id')->published();
     }
 }

@@ -51,11 +51,6 @@ class Thread extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class)->whereNull('parent_id');
-    }
-
-    public function getComments(): Collection
-    {
-        return $this->comments()->get();
+        return $this->hasMany(Comment::class)->whereNull('parent_id')->published();
     }
 }
