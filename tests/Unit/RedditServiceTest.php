@@ -31,7 +31,7 @@ class RedditServiceTest extends TestCase
             'title' => $mock->title,
         ]);
 
-        $this->assertEquals(403, $httpTest->status());
+        $this->assertEquals(401, $httpTest->status());
 
         $this->assertIsBool($this->redditService->publishToReddit($mock));
     }
